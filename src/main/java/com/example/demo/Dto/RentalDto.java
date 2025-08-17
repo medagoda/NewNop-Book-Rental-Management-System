@@ -18,6 +18,8 @@ public class RentalDto {
 
     private Long id;
 
+    private Long bookId;
+
     private BookDto bookDto;
 
     private LocalDate rentalDate;

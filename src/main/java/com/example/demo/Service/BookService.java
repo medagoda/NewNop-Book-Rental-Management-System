@@ -13,5 +13,9 @@ public interface BookService {
 
     BookDto updateBook(Long id, BookDto bookDto);
 
+    BookDto markAsBorrowed(Long bookId);
+
+    BookDto markAsAvailable(Long bookId);
+
 
 }

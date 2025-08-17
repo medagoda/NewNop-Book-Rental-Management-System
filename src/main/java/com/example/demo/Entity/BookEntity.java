@@ -23,11 +23,11 @@ public class BookEntity {
     private Long id;
 
     @NotBlank(message = "Title is required")
-    @Size(min = 4, max = 20, message = "Title must be between 4 and 20 characters")
+    @Size(max = 50, message = "Title must be between 4 and 20 characters")
     private String title;
 
     @NotBlank(message = "Author is required")
-    @Size(min = 5, max = 20, message = "Author must be between 5 and 20 characters")
+    @Size(max = 50, message = "Author must be between 5 and 20 characters")
     private String author;
 
     @Column(nullable = false)

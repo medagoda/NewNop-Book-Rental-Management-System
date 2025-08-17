@@ -29,12 +29,6 @@ public class BookServiceImpl implements BookService{
     @Override
     public BookDto create(BookDto bookDto) {
         if (bookDto != null) {
-            /* if (bookDto.getAvailabilityStatus() == null) {
-                bookDto.setAvailabilityStatus(AvailabilityStatus.AVAILABLE);
-            }
-
-             */
-
             BookEntity mapped = bookTransformer.DTOtoBook(bookDto);
             return bookTransformer.BookToDTO(bookDao.save(mapped));
         }
@@ -77,6 +71,29 @@ public class BookServiceImpl implements BookService{
         return bookTransformer.BookToDTO(savedBook);
     }
 
+    @Override
+    public BookDto markAsBorrowed(Long bookId) {
+        BookEntity book = bookDao.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found with id: " + bookId));
+
+        book.setBorrowed(true); // update isBorrowed
+        book.setAvailabilityStatus(AvailabilityStatus.CHECKED_OUT); // update status
+
+        BookEntity updatedBook = bookDao.save(book);
+        return bookTransformer.BookToDTO(updatedBook);
+    }
+
+    @Override
+    public BookDto markAsAvailable(Long bookId) {
+        BookEntity book = bookDao.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found with id: " + bookId));
+
+        book.setBorrowed(false); // reset isBorrowed
+        book.setAvailabilityStatus(AvailabilityStatus.AVAILABLE); // reset status
+
+        BookEntity updatedBook = bookDao.save(book);
+        return bookTransformer.BookToDTO(updatedBook);
+    }
 
 
 }

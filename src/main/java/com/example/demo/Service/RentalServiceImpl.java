@@ -6,6 +6,7 @@ import com.example.demo.Dto.BookDto;
 import com.example.demo.Dto.RentalDto;
 import com.example.demo.Entity.BookEntity;
 import com.example.demo.Entity.RentalEntity;
+import com.example.demo.Enums.AvailabilityStatus;
 import com.example.demo.Transformers.BookTransformer;
 import com.example.demo.Transformers.RentalTransformer;
 
@@ -43,15 +44,15 @@ public class RentalServiceImpl implements RentalService{
         }
 
         // fetch the book from DB instead of directly converting DTO
-        BookEntity book = bookDao.findById(rentalDto.getBookDto().getId())
-                .orElseThrow(() -> new RuntimeException("Book not found with id: " + rentalDto.getBookDto().getId()));
+        BookEntity book = bookDao.findById(rentalDto.getBookId())
+                .orElseThrow(() -> new RuntimeException("Book not found with id: " + rentalDto.getBookId()));
 
         if (book.isBorrowed()) {
             throw new RuntimeException("You can't rent a borrowed book");
         }
 
         book.setBorrowed(true);
-        bookService.updateBook(book.getId(), bookTransformer.BookToDTO(book));
+        bookService.markAsBorrowed(book.getId());
 
         LocalDate actualDate = LocalDate.now();
 
@@ -97,8 +98,8 @@ public class RentalServiceImpl implements RentalService{
                     existingRental.setReturnDate(rentalDto.getReturnDate());
 
                     // Optional: update book if needed
-                    if (!existingRental.getBook().getId().equals(rentalDto.getBookDto().getId())) {
-                        BookEntity newBook = bookDao.findById(rentalDto.getBookDto().getId())
+                    if (!existingRental.getBook().getId().equals(rentalDto.getBookId())) {
+                        BookEntity newBook = bookDao.findById(rentalDto.getBookId())
                                 .orElseThrow(() -> new RuntimeException("Book not found"));
                         existingRental.setBook(newBook);
                     }

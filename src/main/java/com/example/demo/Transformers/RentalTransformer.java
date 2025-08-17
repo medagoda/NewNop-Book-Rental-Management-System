@@ -19,7 +19,6 @@ public class RentalTransformer {
             RentalEntity rental = new RentalEntity();
             rental.setId(rentalDto.getId());
             rental.setReturned(rentalDto.isReturned());
-            rental.setBook(bookTransformer.DTOtoBook(rentalDto.getBookDto()));
             rental.setReturnDate(rentalDto.getReturnDate());
             rental.setRentalDate(rentalDto.getRentalDate());
             rental.setName(rentalDto.getName());
