@@ -1,8 +1,8 @@
 package com.example.demo.Dto;
 
-import com.example.demo.Entity.BookEntity;
-import com.example.demo.Entity.UserEntity;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,15 +20,19 @@ public class RentalDto {
 
     private BookDto bookDto;
 
-    @NotNull
     private LocalDate rentalDate;
 
-    @NotNull
     private LocalDate returnDate;
 
     private boolean returned;
 
-    @NotNull
-    private UserDto userDto;
+    @NotBlank
+    @Size(min = 5, max = 20)
+    private String name;
 
+    private String email;
+
+    private String phone;
+
+    private Integer rentalDays;
 }

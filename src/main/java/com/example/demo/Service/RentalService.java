@@ -12,7 +12,7 @@ public interface RentalService {
 
     List<RentalDto> findAll();
 
-    RentalDto create(BookEntity bookEntity);
+    RentalDto create(RentalDto rentalDto);
 
     RentalDto returnBook(RentalEntity rentalEntity);
 

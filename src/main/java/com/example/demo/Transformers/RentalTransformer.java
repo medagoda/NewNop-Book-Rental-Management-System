@@ -12,8 +12,6 @@ public class RentalTransformer {
     @Autowired
     private BookTransformer bookTransformer;
 
-    private UserTransformer userTransformer;
-
     public RentalEntity DtoToRental(RentalDto rentalDto){
         if (rentalDto == null) {
             return null;
@@ -23,8 +21,11 @@ public class RentalTransformer {
             rental.setReturned(rentalDto.isReturned());
             rental.setBook(bookTransformer.DTOtoBook(rentalDto.getBookDto()));
             rental.setReturnDate(rentalDto.getReturnDate());
-            rental.setUser(userTransformer.dtoToUser(rentalDto.getUserDto()));
             rental.setRentalDate(rentalDto.getRentalDate());
+            rental.setName(rentalDto.getName());
+            rental.setEmail(rentalDto.getEmail());
+            rental.setPhone(rentalDto.getPhone());
+            rental.setRentalDays(rentalDto.getRentalDays());
             return rental;
         }
     }
@@ -38,8 +39,11 @@ public class RentalTransformer {
             rentalDto.setReturned(rentalEntity.isReturned());
             rentalDto.setBookDto(bookTransformer.BookToDTO(rentalEntity.getBook()));
             rentalDto.setReturnDate(rentalEntity.getReturnDate());
-            rentalDto.setUserDto(userTransformer.userToDto(rentalEntity.getUser()));
             rentalDto.setRentalDate(rentalEntity.getRentalDate());
+            rentalDto.setName(rentalEntity.getName());
+            rentalDto.setEmail(rentalEntity.getEmail());
+            rentalDto.setPhone(rentalEntity.getPhone());
+            rentalDto.setRentalDays(rentalEntity.getRentalDays());
             return rentalDto;
         }
     }

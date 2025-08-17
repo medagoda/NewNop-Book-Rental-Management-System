@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Dto.BookDto;
+import com.example.demo.Enums.AvailabilityStatus;
 import com.example.demo.Service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/api/book")
+@RequestMapping("/api/books")
 public class BookController {
 
     @Autowired
@@ -28,6 +30,11 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<BookDto> create(@Valid @RequestBody BookDto bookDto) {
+
+        // Set default status if null
+        if (bookDto.getAvailabilityStatus() == null) {
+            bookDto.setAvailabilityStatus(AvailabilityStatus.AVAILABLE);
+        }
         BookDto createdBook = bookService.create(bookDto);
         // Return 201 CREATED with the created book
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);

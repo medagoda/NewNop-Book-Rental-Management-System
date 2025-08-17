@@ -19,12 +19,21 @@ public class BookServiceImpl implements BookService{
 
     private final BookTransformer bookTransformer;
 
+
+    public BookDto findById(Long id) {
+        BookEntity book = bookDao.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+        return bookTransformer.BookToDTO(book);
+    }
+
     @Override
     public BookDto create(BookDto bookDto) {
         if (bookDto != null) {
-            if (bookDto.getAvailabilityStatus() == null) {
+            /* if (bookDto.getAvailabilityStatus() == null) {
                 bookDto.setAvailabilityStatus(AvailabilityStatus.AVAILABLE);
             }
+
+             */
 
             BookEntity mapped = bookTransformer.DTOtoBook(bookDto);
             return bookTransformer.BookToDTO(bookDao.save(mapped));

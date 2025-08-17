@@ -8,6 +8,7 @@ import com.example.demo.Entity.BookEntity;
 import com.example.demo.Entity.RentalEntity;
 import com.example.demo.Transformers.BookTransformer;
 import com.example.demo.Transformers.RentalTransformer;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,26 +37,40 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
-    public RentalDto create(BookEntity book) {
-        if (book != null){
-            if (book.isBorrowed())
-                throw new RuntimeException("You can't rent a borrowed book");
-
-            book.setBorrowed(true);
-            bookService.updateBook(book.getId(), bookTransformer.BookToDTO(book));
-            LocalDate actualDate = LocalDate.now();
-            return rentalTransformer.rentalToDto(rentalDao.save(
-                            RentalEntity.builder()
-                                    .book(book)
-                                    .rentalDate(actualDate)
-                                    .returnDate(actualDate.plusDays(RENT_PERIOD))
-                                    .returned(false)
-                                    .build()
-                    )
-            );
+    public RentalDto create(RentalDto rentalDto) {
+        if (rentalDto == null) {
+            throw new RuntimeException("Rental data is required");
         }
-        return null;
+
+        // fetch the book from DB instead of directly converting DTO
+        BookEntity book = bookDao.findById(rentalDto.getBookDto().getId())
+                .orElseThrow(() -> new RuntimeException("Book not found with id: " + rentalDto.getBookDto().getId()));
+
+        if (book.isBorrowed()) {
+            throw new RuntimeException("You can't rent a borrowed book");
+        }
+
+        book.setBorrowed(true);
+        bookService.updateBook(book.getId(), bookTransformer.BookToDTO(book));
+
+        LocalDate actualDate = LocalDate.now();
+
+        RentalEntity rentalEntity = RentalEntity.builder()
+                .book(book)
+                .name(rentalDto.getName())
+                .email(rentalDto.getEmail())
+                .phone(rentalDto.getPhone())
+                .rentalDays(rentalDto.getRentalDays())
+                .rentalDate(actualDate)
+                .returnDate(actualDate.plusDays(RENT_PERIOD))
+                .returned(false)
+                .build();
+
+        RentalEntity savedRental = rentalDao.save(rentalEntity);
+
+        return rentalTransformer.rentalToDto(savedRental);
     }
+
 
     @Override
     public RentalDto returnBook(RentalEntity rentalEntity) {
@@ -82,8 +97,8 @@ public class RentalServiceImpl implements RentalService{
                     existingRental.setReturnDate(rentalDto.getReturnDate());
 
                     // Optional: update book if needed
-                    if (!existingRental.getBook().getId().equals(rentalDto.getId())) {
-                        BookEntity newBook = bookDao.findById(rentalDto.getId())
+                    if (!existingRental.getBook().getId().equals(rentalDto.getBookDto().getId())) {
+                        BookEntity newBook = bookDao.findById(rentalDto.getBookDto().getId())
                                 .orElseThrow(() -> new RuntimeException("Book not found"));
                         existingRental.setBook(newBook);
                     }

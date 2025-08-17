@@ -1,13 +1,14 @@
 package com.example.demo.Dao;
 
 import com.example.demo.Entity.RentalEntity;
-import com.example.demo.Entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public interface RentalDao extends JpaRepository<RentalEntity, Long> {
-    List<RentalEntity> findAllByUser(UserEntity user);
+    @Query("SELECT r FROM RentalEntity r JOIN FETCH r.book")
+    List<RentalEntity> findAllWithBooks();
 }
