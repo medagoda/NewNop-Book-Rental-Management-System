@@ -17,7 +17,7 @@ A **Rental Management System** built with **React** (frontend) and **Spring Boot
 This system allows users to:
 - View all books with availability status.
 - Add, update, and delete books (only if not rented).
-- Rent and return books.
+- Rent books.
 - Search and filter books.
 - See toast notifications for success/error actions.
 - Use a responsive UI styled with Tailwind CSS.
